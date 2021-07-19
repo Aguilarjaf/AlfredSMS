@@ -1,0 +1,23 @@
+{
+  "name": "alfredremind",
+  "version": "1.0.0",
+  "description": "An interactive reminder app.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alfredremind",
+    "interactive",
+    "reminder",
+    "app"
+  ],
+  "author": "Jorge Aguilar",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "twilio": "^3.66.0"
+  }
+}
