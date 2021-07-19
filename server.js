@@ -76,7 +76,7 @@ app.post('/message', (req, res) => {
 
 });
 
-var PORT = 1337
+var PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log("Express server listening on port: " + PORT);
 });
