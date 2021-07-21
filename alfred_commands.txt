@@ -1,0 +1,7 @@
+Get
+Get LIST_NAME
+Remove NUMBER
+Remove All
+New LIST_NAME
+Delete LIST_NAME
+Set NEW_TIME
