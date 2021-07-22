@@ -42,7 +42,7 @@ function sendCurrentList() {
             var count = 1;
             var currentItemsString = "";
             reminderItems.forEach(function (singleItem) {
-                currentItemsString += "\n" + count + ". " + singleItem.description + "\n";
+                currentItemsString += "\n" + count + ". " + singleItem.description;
                 count++;
             });
 
