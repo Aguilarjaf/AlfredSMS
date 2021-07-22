@@ -33,26 +33,29 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-// Send start up message
-// Reminder.find({}, function (err, reminderItems) {
-//     if (err) console.log(err);
-//     else {
-//         var count = 1;
-//         var currentItemsString = "";
-//         reminderItems.forEach(function (singleItem) {
-//             currentItemsString += "\n" + count + ". " + singleItem.description + "\n";
-//             count++;
-//         });
+// A function to send the current state of the reminders list
+function sendCurrentList() {
+    // Send the updated list of items
+    Reminder.find({}, function (err, reminderItems) {
+        if (err) console.log(err);
+        else {
+            var count = 1;
+            var currentItemsString = "";
+            reminderItems.forEach(function (singleItem) {
+                currentItemsString += "\n" + count + ". " + singleItem.description + "\n";
+                count++;
+            });
 
-//         client.messages.create({
-//             body: "Here are your reminders:\n" + currentItemsString,
-//             from: process.env.TWILIO_PHONE_NUMBER,
-//             to: process.env.MY_PHONE_NUMBER
-//         })
-//         .then((message) => console.log(message.sid))
-//         .catch((err) => console.log(err));
-//     }
-// });
+            client.messages.create({
+                body: "Here are your reminders:\n" + currentItemsString,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                to: process.env.MY_PHONE_NUMBER
+            })
+                .then((message) => console.log(message.sid))
+                .catch((err) => console.log(err));
+        }
+    });
+}
 
 // Respond to incoming SMS
 app.post('/message', (req, res) => {
@@ -60,7 +63,10 @@ app.post('/message', (req, res) => {
     var messageBody = req.body.Body;
 
     // Ensure message is being sent from a your device only
-    if (req.body.From == process.env.MY_PHONE_NUMBER) {
+    if (messageBody.toLowerCase() == "get") {
+        console.log("Get function was called.");
+        sendCurrentList();
+    } else if (req.body.From == process.env.MY_PHONE_NUMBER) {
 
         if (messageBody.split(" ")[0].toLowerCase() == "remove") {
 
@@ -79,23 +85,7 @@ app.post('/message', (req, res) => {
                                     console.log("Successfully deleted checked item.");
 
                                     // Send the updated list of items
-                                    Reminder.find({}, function (err, reminderItems) {
-                                        if (err) console.log(err);
-                                        else {
-                                            var count = 1;
-                                            var currentItemsString = "";
-                                            reminderItems.forEach(function (singleItem) {
-                                                currentItemsString += "\n" + count + ". " + singleItem.description + "\n";
-                                                count++;
-                                            });
-
-                                            // Send the new list as an SMS
-                                            res.send(`
-                                                <Response><Message>
-                                                    Message received. Here are your reminders: \n${currentItemsString}
-                                                </Message></Response>`);
-                                        }
-                                    });
+                                    sendCurrentList();
                                 }
                             });
                             count++;
@@ -118,28 +108,10 @@ app.post('/message', (req, res) => {
                 if (err) console.log(err);
                 else {
                     // Send the updated list of items
-                    Reminder.find({}, function (err, reminderItems) {
-                        if (err) console.log(err);
-                        else {
-                            var count = 1;
-                            var currentItemsString = "";
-                            reminderItems.forEach(function (singleItem) {
-                                currentItemsString += "\n" + count + ". " + singleItem.description + "\n";
-                                count++;
-                            });
-
-                            // Send the new list as an SMS
-                            res.send(`
-                                <Response><Message>
-                                    Message received. Here are your reminders: \n${currentItemsString}
-                                </Message></Response>`);
-                        }
-                    });
+                    sendCurrentList();
                 }
             });
-
         }
-
     }
 });
 
