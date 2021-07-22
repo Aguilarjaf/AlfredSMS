@@ -49,26 +49,22 @@ Reminder.find({}, function (err, reminderItems) {
             from: process.env.TWILIO_PHONE_NUMBER,
             to: process.env.MY_PHONE_NUMBER
         })
-            .then((message) => console.log(message.sid))
-            .catch((err) => console.log(err)
-            );
+        .then((message) => console.log(message.sid))
+        .catch((err) => console.log(err));
     }
 });
 
 // Respond to incoming SMS
 app.post('/message', (req, res) => {
 
-
-    // console.log(req.body.Body);
     var messageBody = req.body.Body;
-    var remindersArray = [];
 
     // Ensure message is being sent from a your device only
     if (req.body.From == process.env.MY_PHONE_NUMBER) {
 
         if (messageBody.split(" ")[0].toLowerCase() == "remove") {
 
-            // Find a way to remove an item from the database based off an index
+            // Remove an item from the database based on the index provided by the user
             var indexToRemove = messageBody.split(" ")[1];
 
             Reminder.find({}, function (err, reminderItems) {
